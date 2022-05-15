@@ -19,10 +19,17 @@ app.config['ENV'] = "development"
 @app.route('/auth',methods=["POST"])
 def login():
     res=request.get_json()
+    # print(res)
     em=res["email"]
     pwd=res["password"]
-    print(em+"\t"+pwd)
-    return "success"
+    for x in tab.find():
+        if em==x["email"]:
+            if pwd ==x["password"]:
+                return "success"
+            else :
+                return "Invalid Password"
+        else:
+            return "Invalid Username"
         
 @app.route('/register',methods=["POST"])
 def register():
@@ -33,13 +40,7 @@ def register():
     gn=req['gender']
     em=req['email']
     pwd=req['password']
-    print( "firstname " + fn +
-      "lastname "+ ln+
-      "roll no "+ rn+
-      "gender "+ gn+
-      "email "+ em+
-      "password "+ pwd)
-
+    tab.insert_one({"first name":fn,"last name":ln,"roll no":rn,"gender":gn,"email":em,"passowrd":pwd})
     return "Congrats"
 
 @app.route('/forgotpass',methods=["POST"])
@@ -47,9 +48,18 @@ def forgotpass():
     req=request.get_json()
     em=req['email']
     pwd=req['password']
-    
-    #
-    # rec=
+    cpwd=req['confirmpassword']
+    if(pwd==cpwd):
+        for x in tab.find():
+            if em==x["email"]:
+                x["password"]=pwd
+    else:
+        return "Password mismatch"
+
+@app.route('/video',methods=["POST"])
+def video():
+    #return main()
+    return "ok"
 
 if __name__ == "__main__":
     app.run(debug=True)
